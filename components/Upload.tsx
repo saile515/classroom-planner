@@ -5,10 +5,12 @@ export default function Upload() {
 		const fileReader = new FileReader();
 		fileReader.readAsText(event.target.files[0]);
 		fileReader.onload = () => {
-			let names = (fileReader.result as string).match(/^[0-9]{1,2}\,[A-Za-z\u00E5\u00E4\u00F6\u00C5\u00C4\u00c5\s]*\,[A-Za-z\u00E5\u00E4\u00F6\u00C5\u00C4\u00c5\s]*/gm);
+			let names: RegExpMatchArray | { first: string; last: string }[] = (fileReader.result as string).match(
+				/^[0-9]{1,2}\,[A-Za-z\u00E5\u00E4\u00F6\u00C5\u00C4\u00c5\s]*\,[A-Za-z\u00E5\u00E4\u00F6\u00C5\u00C4\u00c5\s]*/gm
+			);
 			names = names.map((name) => {
 				const arr = name.split(",");
-				return `${arr[2]} ${arr[1]}`.trim();
+				return { first: arr[2].split(" ")[1], last: arr[1] };
 			});
 			localStorage.setItem("nameList", JSON.stringify(names));
 		};

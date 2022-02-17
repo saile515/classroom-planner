@@ -8,7 +8,11 @@ export default function Canvas() {
 
 	useEffect(() => {
 		if (localStorage.getItem("nameList"))
-			setSeats(JSON.parse(localStorage.getItem("nameList")).map((name: string) => <Seat key={name} parentBoundingRect={ref.current.getBoundingClientRect()} name={name} />));
+			setSeats(
+				JSON.parse(localStorage.getItem("nameList")).map((name: { first: string; last: string }) => (
+					<Seat key={name.first + name.last} parentBoundingRect={ref.current.getBoundingClientRect()} name={name} />
+				))
+			);
 	}, []);
 
 	return (
