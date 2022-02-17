@@ -5,8 +5,8 @@ interface Position {
 	y: number;
 }
 
-export default function Seat(props: { parentBoundingRect: DOMRect; name: { first: string; last: string } }) {
-	const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
+export default function Seat(props: { parentBoundingRect: DOMRect; name: { first: string; last: string }; position: Position }) {
+	const [position, setPosition] = useState<Position>({ x: props.position.x, y: props.position.y });
 	const [isDragging, setIsDragging] = useState<boolean>(false);
 	const [mouseOffset, setMouseOffset] = useState<Position>({ x: 0, y: 0 });
 	const ref = useRef<SVGRectElement>();
@@ -37,15 +37,15 @@ export default function Seat(props: { parentBoundingRect: DOMRect; name: { first
 				y={position.y}
 				width={scale}
 				height={scale}
-				className=" cursor-move"
+				className=" cursor-move border-slate-200 stroke-slate-200 stroke-2"
 				onMouseDown={startDrag}
 				onMouseUp={endDrag}
 				onMouseLeave={endDrag}
 				onMouseMove={handleDrag}
 				ref={ref}
 			/>
-			<foreignObject x={position.x} y={position.y} width={scale} height={scale} className=" pointer-events-none">
-				<p className={"text-white text-[10px]"}>
+			<foreignObject x={position.x} y={position.y} width={scale} height={scale} className=" pointer-events-none bg-blue-700">
+				<p className={"text-white text-[10px] p-[2px]"}>
 					<span className=" block whitespace-nowrap overflow-ellipsis overflow-hidden">{props.name.first}</span>{" "}
 					<span className=" block whitespace-nowrap overflow-ellipsis overflow-hidden">{props.name.last}</span>
 				</p>
