@@ -1,6 +1,9 @@
 import { ChangeEvent } from "react";
+import { useRouter } from "next/router";
 
 export default function Upload() {
+	const router = useRouter();
+
 	async function fileUploaded(event: ChangeEvent<HTMLInputElement>) {
 		const fileReader = new FileReader();
 		fileReader.readAsText(event.target.files[0]);
@@ -13,6 +16,7 @@ export default function Upload() {
 				return { first: arr[2].split(" ")[1], last: arr[1] };
 			});
 			localStorage.setItem("nameList", JSON.stringify(names));
+			router.reload();
 		};
 	}
 
