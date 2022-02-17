@@ -10,7 +10,7 @@ export default function Upload() {
 				const arr = name.split(",");
 				return `${arr[2]} ${arr[1]}`.trim();
 			});
-			console.log(names);
+			localStorage.setItem("nameList", JSON.stringify(names));
 		};
 	}
 

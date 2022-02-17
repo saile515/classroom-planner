@@ -5,7 +5,7 @@ interface Position {
 	y: number;
 }
 
-export default function Seat(props: { parentBoundingRect: DOMRect }) {
+export default function Seat(props: { parentBoundingRect: DOMRect; name: string }) {
 	const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 	const [isDragging, setIsDragging] = useState<boolean>(false);
 	const [mouseOffset, setMouseOffset] = useState<Position>({ x: 0, y: 0 });
@@ -30,6 +30,22 @@ export default function Seat(props: { parentBoundingRect: DOMRect }) {
 	}
 
 	return (
-		<rect x={position.x} y={position.y} width={100} height={100} className=" cursor-move" onMouseDown={startDrag} onMouseUp={endDrag} onMouseLeave={endDrag} onMouseMove={handleDrag} ref={ref} />
+		<g>
+			<rect
+				x={position.x}
+				y={position.y}
+				width={100}
+				height={100}
+				className=" cursor-move"
+				onMouseDown={startDrag}
+				onMouseUp={endDrag}
+				onMouseLeave={endDrag}
+				onMouseMove={handleDrag}
+				ref={ref}
+			/>
+			<foreignObject x={position.x} y={position.y} width="100" height="100" className=" pointer-events-none">
+				<p className=" text-white text-[15px]">{props.name}</p>
+			</foreignObject>
+		</g>
 	);
 }
