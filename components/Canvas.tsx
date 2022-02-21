@@ -2,7 +2,12 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 
 import Seat from "./Seat";
 
-export default function Canvas() {
+export enum CanvasState {
+	DrawLine,
+	PlaceSeat,
+}
+
+export default function Canvas(props: { canvasState: CanvasState }) {
 	const ref = useRef<SVGSVGElement>();
 	const [seats, setSeats] = useState<ReactElement[]>([]);
 
@@ -26,6 +31,7 @@ export default function Canvas() {
 	return (
 		<svg height="100%" width="100%" ref={ref}>
 			{seats}
+			{props.canvasState == CanvasState.DrawLine ? <rect x="100" y="100" width="100" height="100" /> : ""}
 		</svg>
 	);
 }

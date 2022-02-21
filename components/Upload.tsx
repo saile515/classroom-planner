@@ -22,7 +22,7 @@ export default function Upload() {
 
 	return (
 		<>
-			<label htmlFor="file" className=" block bg-blue-700 text-white h-8 m-2 w-24 leading-8 px-2 rounded-md border-slate-200 border-2 box-content text-center">
+			<label htmlFor="file" className=" block bg-blue-700 text-white h-8 mx-1 w-24 leading-8 px-2 rounded-md border-slate-200 border-2 box-content text-center">
 				Upload File
 			</label>
 			<input accept=".txt" type="file" id="file" className=" hidden" onChange={fileUploaded} />
