@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
 import Seat from "./Seat";
+import useDragAndDrop from "../hooks/useDragAndDrop";
 
 export enum CanvasState {
 	DrawLine,
@@ -10,8 +11,12 @@ export enum CanvasState {
 export default function Canvas(props: { canvasState: CanvasState }) {
 	const ref = useRef<SVGSVGElement>();
 	const [seats, setSeats] = useState<ReactElement[]>([]);
+	const draw = useRef<SVGRectElement>();
+	const [boundingClientRect, setBoundingClientRect] = useState<DOMRect>(null);
+	let [startDrag, endDrag, handleDrag, position] = useDragAndDrop({ element: draw, initialPosition: { x: 0, y: 0 }, parentBoundingRect: boundingClientRect });
 
 	useEffect(() => {
+		setBoundingClientRect(ref.current.getBoundingClientRect());
 		if (localStorage.getItem("nameList"))
 			setSeats(
 				JSON.parse(localStorage.getItem("nameList")).map((name: { first: string; last: string }, index: number) => (
@@ -31,7 +36,11 @@ export default function Canvas(props: { canvasState: CanvasState }) {
 	return (
 		<svg height="100%" width="100%" ref={ref}>
 			{seats}
-			{props.canvasState == CanvasState.DrawLine ? <rect x="100" y="100" width="100" height="100" /> : ""}
+			{props.canvasState == CanvasState.DrawLine ? (
+				<rect x={position.x} y={position.y} width="100" height="100" onMouseDown={startDrag} onMouseUp={endDrag} onMouseLeave={endDrag} onMouseMove={handleDrag} ref={draw} />
+			) : (
+				""
+			)}
 		</svg>
 	);
 }
