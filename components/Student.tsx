@@ -1,8 +1,8 @@
-import useDragAndDrop, { Position } from "../hooks/useDragAndDrop";
+import useDragAndDrop, { Vector } from "../hooks/useDragAndDrop";
 
 import { useRef } from "react";
 
-export default function Seat(props: { parentBoundingRect: DOMRect; name: { first: string; last: string }; position: Position }) {
+export default function Student(props: { parentBoundingRect: DOMRect; name: { first: string; last: string }; position: Vector }) {
 	const ref = useRef<SVGRectElement>();
 	const [startDrag, endDrag, handleDrag, position] = useDragAndDrop({ element: ref, initialPosition: props.position, parentBoundingRect: props.parentBoundingRect });
 	const scale = 50;

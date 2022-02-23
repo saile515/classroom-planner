@@ -1,7 +1,8 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
-import Seat from "./Seat";
-import useDragAndDrop from "../hooks/useDragAndDrop";
+import Student from "./Student";
+import { Vector } from "../hooks/useDragAndDrop";
+import useDrawLine from "../hooks/useDrawLine";
 
 export enum CanvasState {
 	DrawLine,
@@ -10,17 +11,14 @@ export enum CanvasState {
 
 export default function Canvas(props: { canvasState: CanvasState }) {
 	const ref = useRef<SVGSVGElement>();
-	const [seats, setSeats] = useState<ReactElement[]>([]);
-	const draw = useRef<SVGRectElement>();
-	const [boundingClientRect, setBoundingClientRect] = useState<DOMRect>(null);
-	let [startDrag, endDrag, handleDrag, position] = useDragAndDrop({ element: draw, initialPosition: { x: 0, y: 0 }, parentBoundingRect: boundingClientRect });
+	const [students, setStudents] = useState<ReactElement[]>([]);
+	const [roomVertices] = useDrawLine(ref, props.canvasState);
 
 	useEffect(() => {
-		setBoundingClientRect(ref.current.getBoundingClientRect());
 		if (localStorage.getItem("nameList"))
-			setSeats(
+			setStudents(
 				JSON.parse(localStorage.getItem("nameList")).map((name: { first: string; last: string }, index: number) => (
-					<Seat
+					<Student
 						key={name.first + name.last}
 						parentBoundingRect={ref.current.getBoundingClientRect()}
 						name={name}
@@ -33,14 +31,20 @@ export default function Canvas(props: { canvasState: CanvasState }) {
 			);
 	}, []);
 
+	// useEffect(() => {
+	// 	switch (props.canvasState) {
+	// 		case CanvasState.DrawLine:
+	// 	}
+	// }, [props.canvasState]);
+
 	return (
 		<svg height="100%" width="100%" ref={ref}>
-			{seats}
-			{props.canvasState == CanvasState.DrawLine ? (
-				<rect x={position.x} y={position.y} width="100" height="100" onMouseDown={startDrag} onMouseUp={endDrag} onMouseLeave={endDrag} onMouseMove={handleDrag} ref={draw} />
-			) : (
-				""
-			)}
+			{students}
+			{roomVertices.map((vertex, index) => {
+				if (roomVertices[index + 1])
+					return <line key={vertex.x + vertex.y + Math.random()} x1={vertex.x} y1={vertex.y} x2={roomVertices[index + 1].x} y2={roomVertices[index + 1].y} stroke="black" strokeWidth="5" />;
+				else return null;
+			})}
 		</svg>
 	);
 }
