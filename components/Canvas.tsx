@@ -40,11 +40,17 @@ export default function Canvas(props: { canvasState: CanvasState }) {
 	return (
 		<svg height="100%" width="100%" ref={ref}>
 			{students}
-			{roomVertices.map((vertex, index) => {
-				if (roomVertices[index + 1])
-					return <line key={vertex.x + vertex.y + Math.random()} x1={vertex.x} y1={vertex.y} x2={roomVertices[index + 1].x} y2={roomVertices[index + 1].y} stroke="black" strokeWidth="5" />;
-				else return null;
-			})}
+			{props.canvasState == CanvasState.DrawLine ? (
+				roomVertices.map((vertex, index) => {
+					if (roomVertices[index + 1])
+						return (
+							<line key={vertex.x + vertex.y + Math.random()} x1={vertex.x} y1={vertex.y} x2={roomVertices[index + 1].x} y2={roomVertices[index + 1].y} stroke="black" strokeWidth="5" />
+						);
+					else return null;
+				})
+			) : (
+				<polygon points={roomVertices.map((vertex) => `${vertex.x}, ${vertex.y}`).join(" ")} />
+			)}
 		</svg>
 	);
 }
