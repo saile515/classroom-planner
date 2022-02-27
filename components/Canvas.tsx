@@ -12,7 +12,8 @@ export enum CanvasState {
 export default function Canvas(props: { canvasState: CanvasState }) {
 	const ref = useRef<SVGSVGElement>();
 	const [students, setStudents] = useState<ReactElement[]>([]);
-	const [roomVertices] = useDrawLine(ref, props.canvasState);
+	const [eventListeners, setEventListeners] = useState<any>({});
+	const [roomVertices, addVertex, previewVertex, drawActive] = useDrawLine(ref, props.canvasState);
 
 	useEffect(() => {
 		if (localStorage.getItem("nameList"))
@@ -31,14 +32,20 @@ export default function Canvas(props: { canvasState: CanvasState }) {
 			);
 	}, []);
 
-	// useEffect(() => {
-	// 	switch (props.canvasState) {
-	// 		case CanvasState.DrawLine:
-	// 	}
-	// }, [props.canvasState]);
+	useEffect(() => {
+		setEventListeners({});
+		drawActive(false);
+
+		switch (props.canvasState) {
+			case CanvasState.DrawLine:
+				drawActive(true);
+				setEventListeners({ onClick: addVertex, onMouseMove: previewVertex });
+				break;
+		}
+	}, [props.canvasState]);
 
 	return (
-		<svg height="100%" width="100%" ref={ref}>
+		<svg height="100%" width="100%" ref={ref} {...eventListeners}>
 			{students}
 			{props.canvasState == CanvasState.DrawLine ? (
 				roomVertices.map((vertex, index) => {

@@ -1,10 +1,14 @@
-import { MutableRefObject, useEffect, useState } from "react";
+import { Dispatch, MutableRefObject, SetStateAction, useEffect, useState } from "react";
 
 import { CanvasState } from "../components/Canvas";
 import { Vector } from "./useDragAndDrop";
 
-export default function useDrawLine(container: MutableRefObject<SVGSVGElement>, canvasState: CanvasState): [Vector[]] {
+export default function useDrawLine(
+	container: MutableRefObject<SVGSVGElement>,
+	canvasState: CanvasState
+): [Vector[], (event: MouseEventInit) => void, (event: MouseEventInit) => void, Dispatch<SetStateAction<boolean>>] {
 	const [roomVertices, setRoomVertices] = useState<Vector[]>([{ x: 0, y: 0 }]);
+	const [isActive, setIsActive] = useState<boolean>(false);
 
 	function addVertex(event: MouseEventInit) {
 		const boundingRect: DOMRect = container.current.getBoundingClientRect();
@@ -22,14 +26,16 @@ export default function useDrawLine(container: MutableRefObject<SVGSVGElement>, 
 	}
 
 	useEffect(() => {
-		if (canvasState != CanvasState.DrawLine) {
-			container.current.removeEventListener("mousedown", addVertex);
-			return;
+		if (isActive) {
+			const tempVertices = roomVertices;
+			tempVertices.push(tempVertices[tempVertices.length - 1]);
+			setRoomVertices(tempVertices);
+		} else {
+			const tempVertices = [...roomVertices];
+			tempVertices.pop();
+			setRoomVertices(tempVertices);
 		}
+	}, [isActive]);
 
-		container.current.addEventListener("mousedown", addVertex);
-		container.current.addEventListener("mousemove", previewVertex);
-	}, [canvasState]);
-
-	return [roomVertices];
+	return [roomVertices, addVertex, previewVertex, setIsActive];
 }
