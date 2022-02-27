@@ -13,15 +13,36 @@ export default function useDrawLine(
 	function addVertex(event: MouseEventInit) {
 		const boundingRect: DOMRect = container.current.getBoundingClientRect();
 		const tempVertices = roomVertices;
-		tempVertices[tempVertices.length - 1] = { x: event.clientX - boundingRect.left, y: event.clientY - boundingRect.top };
+		const previewVertex = { x: event.clientX - boundingRect.left, y: event.clientY - boundingRect.top };
+
+		if (roomVertices.length > 1 && Math.abs(tempVertices[tempVertices.length - 2].x - (event.clientX - boundingRect.left)) <= 50) {
+			previewVertex.x = tempVertices[tempVertices.length - 2].x;
+		}
+
+		if (roomVertices.length > 1 && Math.abs(tempVertices[tempVertices.length - 2].y - (event.clientY - boundingRect.top)) <= 50) {
+			previewVertex.y = tempVertices[tempVertices.length - 2].y;
+		}
+
+		tempVertices[tempVertices.length - 1] = previewVertex;
 		tempVertices.push({ x: event.clientX - boundingRect.left, y: event.clientY - boundingRect.top });
 		setRoomVertices(tempVertices);
 	}
 
 	function previewVertex(event: MouseEventInit) {
+		if (roomVertices.length < 2) return;
 		const boundingRect: DOMRect = container.current.getBoundingClientRect();
 		const tempVertices = [...roomVertices];
-		tempVertices[tempVertices.length - 1] = { x: event.clientX - boundingRect.left, y: event.clientY - boundingRect.top };
+		const previewVertex = { x: event.clientX - boundingRect.left, y: event.clientY - boundingRect.top };
+
+		if (Math.abs(tempVertices[tempVertices.length - 2].x - (event.clientX - boundingRect.left)) <= 50) {
+			previewVertex.x = tempVertices[tempVertices.length - 2].x;
+		}
+
+		if (Math.abs(tempVertices[tempVertices.length - 2].y - (event.clientY - boundingRect.top)) <= 50) {
+			previewVertex.y = tempVertices[tempVertices.length - 2].y;
+		}
+
+		tempVertices[tempVertices.length - 1] = previewVertex;
 		setRoomVertices(tempVertices);
 	}
 
