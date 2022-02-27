@@ -17,7 +17,7 @@ const Home: NextPage = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Toolbar setCanvasState={setCanvasState} canvasState={canvasState} />
-			<Canvas canvasState={canvasState} />
+			<Canvas canvasState={canvasState} setCanvasState={setCanvasState} />
 		</div>
 	);
 };

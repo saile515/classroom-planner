@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from "react";
 
 import Student from "./Student";
 import { Vector } from "../hooks/useDragAndDrop";
@@ -9,11 +9,19 @@ export enum CanvasState {
 	PlaceSeat,
 }
 
-export default function Canvas(props: { canvasState: CanvasState }) {
+export default function Canvas(props: { canvasState: CanvasState; setCanvasState: Dispatch<SetStateAction<CanvasState>> }) {
 	const ref = useRef<SVGSVGElement>();
 	const [students, setStudents] = useState<ReactElement[]>([]);
 	const [eventListeners, setEventListeners] = useState<any>({});
 	const [roomVertices, addVertex, previewVertex, drawActive] = useDrawLine(ref, props.canvasState);
+
+	function leaveState(event: KeyboardEvent) {
+		if (event.key == "Enter") {
+			setEventListeners({});
+			props.setCanvasState(null);
+			drawActive(false);
+		}
+	}
 
 	useEffect(() => {
 		if (localStorage.getItem("nameList"))
@@ -39,14 +47,17 @@ export default function Canvas(props: { canvasState: CanvasState }) {
 		switch (props.canvasState) {
 			case CanvasState.DrawLine:
 				drawActive(true);
-				setEventListeners({ onClick: addVertex, onMouseMove: previewVertex });
+				setEventListeners({
+					onClick: addVertex,
+					onMouseMove: previewVertex,
+					onKeyDown: leaveState,
+				});
 				break;
 		}
 	}, [props.canvasState]);
 
 	return (
-		<svg height="100%" width="100%" ref={ref} {...eventListeners}>
-			{students}
+		<svg height="100%" width="100%" ref={ref} tabIndex={0} className=" outline-none" {...eventListeners}>
 			{props.canvasState == CanvasState.DrawLine ? (
 				roomVertices.map((vertex, index) => {
 					if (roomVertices[index + 1])
@@ -58,6 +69,8 @@ export default function Canvas(props: { canvasState: CanvasState }) {
 			) : (
 				<polygon points={roomVertices.map((vertex) => `${vertex.x}, ${vertex.y}`).join(" ")} />
 			)}
+
+			{students}
 		</svg>
 	);
 }
