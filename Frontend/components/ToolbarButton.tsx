@@ -11,7 +11,7 @@ export default function ToolbarButton(props: { icon: string; setCanvasState: (va
 
 	return (
 		<button
-			className={` text-white h-8 mx-1 w-8 rounded-md border-slate-300 border-2 box-content text-center ${active ? "bg-slate-100" : "bg-white"}`}
+			className={` text-white h-6 mx-1 w-6 rounded-md border-slate-300 border-2 box-content text-center ${active ? "bg-slate-100" : "bg-white"}`}
 			onClick={() => {
 				props.setCanvasState(active ? null : props.state);
 				setActive(!active);
