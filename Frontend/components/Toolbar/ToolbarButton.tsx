@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { CanvasState } from "./Canvas";
+import { CanvasState } from "../Canvas";
 
 export default function ToolbarButton(props: { icon: string; setCanvasState: (value: CanvasState) => void; canvasState: CanvasState; state: CanvasState }) {
 	const [active, setActive] = useState<boolean>(false);
