@@ -8,7 +8,7 @@ export default function ContextButton(props: { icon: string }) {
 	return (
 		<>
 			<button
-				className={` text-white h-6 mx-1 w-6 rounded-md border-slate-200 border-2 box-content text-center bg-blue-700`}
+				className="text-white h-6 mx-1 w-6 rounded-md border-slate-200 border-2 box-content text-center bg-blue-700 z-10 relative"
 				onClick={() => {
 					setActive(!active);
 				}}>
